@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>AI Terminal</title>
+  <title>Siyasi Adam Terminali</title>
   <style>
     body { background: black; color: lime; font-family: monospace; padding: 20px; }
     #terminal { border: 1px solid lime; padding: 10px; min-height: 300px; }
@@ -12,8 +12,8 @@
 </head>
 <body>
   <div id="terminal">
-    <div class="line">AI@github:~$ Hoşgeldin!</div>
-    <div class="line">AI@github:~$ <input id="cmdInput" autofocus></div>
+    <div class="line">SiyasiAdam@github:~$ Hoşgeldin!</div>
+    <div class="line">SiyasiAdam@github:~$ <input id="cmdInput" autofocus></div>
   </div>
 
   <script>
@@ -25,20 +25,34 @@
         const command = input.value.trim();
         const newLine = document.createElement("div");
         newLine.className = "line";
-        newLine.textContent = "AI@github:~$ " + command;
+        newLine.textContent = "SiyasiAdam@github:~$ " + command;
         terminal.insertBefore(newLine, input.parentElement);
-        
-        // Komut kontrolü
-        if (command.startsWith("/search")) {
-          const query = command.replace("/search", "").trim();
-          const resultLine = document.createElement("div");
-          resultLine.className = "line";
-          resultLine.textContent = "Arama yapılıyor: " + query;
-          terminal.insertBefore(resultLine, input.parentElement);
 
-          // Burada gerçek API çağrısı yapılabilir
-          // Örn: fetch("https://api.bing.microsoft.com/v7.0/search?q=" + query, { headers: { "Ocp-Apim-Subscription-Key": "ANAHTARIN" } })
-          // Sonucu terminale yazdırabilirsin
+        if (command === "") {
+          const warn = document.createElement("div");
+          warn.className = "line";
+          warn.textContent = "⚠️ Uyarı: Komut boş olamaz!";
+          terminal.insertBefore(warn, input.parentElement);
+        } else if (command === "/selam") {
+          const reply = document.createElement("div");
+          reply.className = "line";
+          reply.textContent = "Merhaba! Ben Siyasi Adam.";
+          terminal.insertBefore(reply, input.parentElement);
+        } else if (command.startsWith("/ara")) {
+          const query = command.replace("/ara", "").trim();
+          const reply = document.createElement("div");
+          reply.className = "line";
+          reply.textContent = "🔎 İnternette arama yapılıyor: " + query;
+          terminal.insertBefore(reply, input.parentElement);
+
+          // Burada gerçek API çağrısı yapılabilir (örneğin Bing Search API)
+          // fetch("https://api.bing.microsoft.com/v7.0/search?q=" + query, { headers: { "Ocp-Apim-Subscription-Key": "ANAHTARIN" } })
+          // Sonuçları terminale yazdırabilirsin
+        } else {
+          const reply = document.createElement("div");
+          reply.className = "line";
+          reply.textContent = "❓ Bilinmeyen komut: " + command;
+          terminal.insertBefore(reply, input.parentElement);
         }
 
         input.value = "";
