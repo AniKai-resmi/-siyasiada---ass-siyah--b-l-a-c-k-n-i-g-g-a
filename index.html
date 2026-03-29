@@ -5,7 +5,7 @@
   <title>Siyasi Adam Terminali</title>
   <style>
     body { background: black; color: lime; font-family: monospace; padding: 20px; }
-    #terminal { border: 1px solid lime; padding: 10px; min-height: 300px; }
+    #terminal { border: 1px solid lime; padding: 10px; min-height: 400px; }
     .line { margin: 5px 0; }
     input { background: black; border: none; color: lime; font-family: monospace; width: 90%; outline: none; }
   </style>
@@ -20,6 +20,9 @@
     const input = document.getElementById("cmdInput");
     const terminal = document.getElementById("terminal");
 
+    // Küfür listesi
+    const kufurler = ["küfür1","küfür2","küfür3"]; // buraya istediğin kelimeleri ekle
+
     input.addEventListener("keydown", async function(event) {
       if (event.key === "Enter") {
         const command = input.value.trim();
@@ -33,21 +36,81 @@
           warn.className = "line";
           warn.textContent = "⚠️ Uyarı: Komut boş olamaz!";
           terminal.insertBefore(warn, input.parentElement);
+
+        } else if (kufurler.includes(command.toLowerCase())) {
+          const reply = document.createElement("div");
+          reply.className = "line";
+          reply.textContent = "⚠️ Ağzını topla! Böyle konuşma burada.";
+          terminal.insertBefore(reply, input.parentElement);
+
         } else if (command === "/selam") {
           const reply = document.createElement("div");
           reply.className = "line";
           reply.textContent = "Merhaba! Ben Siyasi Adam.";
           terminal.insertBefore(reply, input.parentElement);
-        } else if (command.startsWith("/ara")) {
-          const query = command.replace("/ara", "").trim();
+
+        } else if (command === "/naber") {
           const reply = document.createElement("div");
           reply.className = "line";
-          reply.textContent = "🔎 İnternette arama yapılıyor: " + query;
+          reply.textContent = "İyiyim, sen nasılsın?";
           terminal.insertBefore(reply, input.parentElement);
 
-          // Burada gerçek API çağrısı yapılabilir (örneğin Bing Search API)
-          // fetch("https://api.bing.microsoft.com/v7.0/search?q=" + query, { headers: { "Ocp-Apim-Subscription-Key": "ANAHTARIN" } })
-          // Sonuçları terminale yazdırabilirsin
+        } else if (command.startsWith("/cmd-siyahi-adam-siteara")) {
+          const query = command.replace("/cmd-siyahi-adam-siteara", "").trim();
+
+          // Fake hack efekt satırları
+          const fakeLines = [
+            "Bağlantı kuruluyor...",
+            "IP adresi bulunuyor...",
+            "Güvenlik duvarı atlatılıyor...",
+            "Veriler çekiliyor...",
+            "Sonuçlar hazırlanıyor..."
+          ];
+
+          let i = 0;
+          const interval = setInterval(() => {
+            if (i < fakeLines.length) {
+              const line = document.createElement("div");
+              line.className = "line";
+              line.textContent = fakeLines[i];
+              terminal.insertBefore(line, input.parentElement);
+              i++;
+            } else {
+              clearInterval(interval);
+
+              const reply = document.createElement("div");
+              reply.className = "line";
+              reply.textContent = "🔎 Siyasi Adam arıyor: " + query;
+              terminal.insertBefore(reply, input.parentElement);
+
+              // Bing Search API çağrısı
+              fetch("https://api.bing.microsoft.com/v7.0/search?q=" + encodeURIComponent(query), {
+                headers: { "Ocp-Apim-Subscription-Key": "BURAYA_API_ANAHTARINI_YAZ" }
+              })
+              .then(res => res.json())
+              .then(data => {
+                if (data.webPages && data.webPages.value.length > 0) {
+                  for (let j = 0; j < Math.min(3, data.webPages.value.length); j++) {
+                    const result = document.createElement("div");
+                    result.className = "line";
+                    result.textContent = `${j+1}. ${data.webPages.value[j].name} - ${data.webPages.value[j].url}`;
+                    terminal.insertBefore(result, input.parentElement);
+                  }
+                } else {
+                  const noResult = document.createElement("div");
+                  noResult.className = "line";
+                  noResult.textContent = "Sonuç bulunamadı.";
+                  terminal.insertBefore(noResult, input.parentElement);
+                }
+              })
+              .catch(err => {
+                const errorLine = document.createElement("div");
+                errorLine.className = "line";
+                errorLine.textContent = "⚠️ Arama sırasında hata oluştu: " + err;
+                terminal.insertBefore(errorLine, input.parentElement);
+              });
+            }
+          }, 1000); // her satır 1 saniye arayla yazılsın
         } else {
           const reply = document.createElement("div");
           reply.className = "line";
